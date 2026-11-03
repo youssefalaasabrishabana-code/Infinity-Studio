@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinity Studio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="app">
+
+  <section class="board" id="board" aria-label="السبورة">
+    <canvas id="boardCanvas"></canvas>
+  </section>
+
+  <!-- شريط الأدوات الرئيسي -->
+  <div class="toolbar" id="toolbar">
+
+    <button class="tool move-handle" id="moveHandle" title="اسحب لتحريك الشريط">
+      <i data-lucide="grip"></i>
+    </button>
+
+    <span class="tool-separator"></span>
+
+    <button class="tool active" data-tool="pen" title="القلم">
+      <i data-lucide="pen-line"></i>
+    </button>
+
+    <button class="tool" data-tool="highlighter" title="الهايلايتر">
+      <i data-lucide="highlighter"></i>
+    </button>
+
+    <button class="tool" data-tool="eraser" title="الممحاة">
+      <i data-lucide="eraser"></i>
+    </button>
+
+    <button class="tool" data-tool="hand" title="تحريك السبورة">
+      <i data-lucide="hand"></i>
+    </button>
+
+    <span class="tool-separator"></span>
+
+    <button class="tool" id="backgroundButton" title="الخلفية">
+      <i data-lucide="layout-grid"></i>
+    </button>
+
+    <button class="tool" id="clearButton" title="مسح السبورة">
+      <i data-lucide="trash-2"></i>
+    </button>
+
+  </div>
+
+  <!-- شريط الأوامر السريعة -->
+  <div class="quick-toolbar" id="quickToolbar">
+
+    <button class="quick-tool" id="saveButton" title="حفظ الصورة">
+      <i data-lucide="download"></i>
+    </button>
+
+    <span class="tool-separator"></span>
+
+    <button class="quick-tool" id="undoButton" title="تراجع">
+      <i data-lucide="undo-2"></i>
+    </button>
+
+    <button class="quick-tool" id="redoButton" title="إعادة">
+      <i data-lucide="redo-2"></i>
+    </button>
+
+    <span class="tool-separator"></span>
+
+    <button class="quick-tool" id="themeButton" title="الوضع الليلي">
+      <i data-lucide="moon"></i>
+    </button>
+
+  </div>
+
+  <!-- لوحة الإعدادات -->
+  <aside class="settings-panel" id="settingsPanel">
+
+    <header class="panel-header">
+      <h3 id="panelTitle">إعدادات القلم</h3>
+
+      <button class="close-panel" id="closePanel" title="إغلاق">
+        <i data-lucide="x"></i>
+      </button>
+    </header>
+
+    <!-- إعدادات القلم -->
+    <section class="tool-settings" id="penSettings" hidden>
+
+      <label>لون القلم</label>
+
+      <div class="color-palette" id="penPalette">
+        <button class="color-option selected" data-color="#202020" style="--swatch:#202020" title="أسود"></button>
+        <button class="color-option" data-color="#e53935" style="--swatch:#e53935" title="أحمر"></button>
+        <button class="color-option" data-color="#1e88e5" style="--swatch:#1e88e5" title="أزرق"></button>
+        <button class="color-option" data-color="#43a047" style="--swatch:#43a047" title="أخضر"></button>
+        <button class="color-option" data-color="#fbc02d" style="--swatch:#fbc02d" title="أصفر"></button>
+        <button class="color-option" data-color="#8e24aa" style="--swatch:#8e24aa" title="بنفسجي"></button>
+        <button class="color-option" data-color="#fb8c00" style="--swatch:#fb8c00" title="برتقالي"></button>
+        <button class="color-option" data-color="#00acc1" style="--swatch:#00acc1" title="سماوي"></button>
+        <button class="color-option" data-color="#ec407a" style="--swatch:#ec407a" title="وردي"></button>
+      </div>
+
+      <label for="penColor">اختيار لون آخر</label>
+      <input type="color" id="penColor" value="#202020">
+
+      <div class="panel-divider"></div>
+
+      <label for="penSize">سُمك القلم</label>
+      <input type="range" id="penSize" min="1" max="35" value="4">
+      <output class="range-value" id="penSizeValue">4</output>
+
+      <div class="panel-divider"></div>
+
+      <div class="setting-row">
+        <div>
+          <strong>تنعيم الكتابة التلقائي</strong>
+          <small>يجعل الخط أكثر انسيابية</small>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" id="penSmoothing" checked>
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+
+    </section>
+
+    <!-- إعدادات الهايلايتر -->
+    <section class="tool-settings" id="highlighterSettings" hidden>
+
+      <label>لون الهايلايتر</label>
+
+      <div class="color-palette" id="highlighterPalette">
+        <button class="color-option selected" data-color="#ffeb3b" style="--swatch:#ffeb3b" title="أصفر"></button>
+        <button class="color-option" data-color="#76ff03" style="--swatch:#76ff03" title="أخضر"></button>
+        <button class="color-option" data-color="#00e5ff" style="--swatch:#00e5ff" title="سماوي"></button>
+        <button class="color-option" data-color="#ff80ab" style="--swatch:#ff80ab" title="وردي"></button>
+        <button class="color-option" data-color="#ffab40" style="--swatch:#ffab40" title="برتقالي"></button>
+        <button class="color-option" data-color="#b388ff" style="--swatch:#b388ff" title="بنفسجي"></button>
+        <button class="color-option" data-color="#69f0ae" style="--swatch:#69f0ae" title="أخضر فاتح"></button>
+        <button class="color-option" data-color="#80d8ff" style="--swatch:#80d8ff" title="أزرق فاتح"></button>
+        <button class="color-option" data-color="#ff8a80" style="--swatch:#ff8a80" title="أحمر فاتح"></button>
+      </div>
+
+      <label for="highlighterColor">اختيار لون آخر</label>
+      <input type="color" id="highlighterColor" value="#ffeb3b">
+
+      <div class="panel-divider"></div>
+
+      <label for="highlighterSize">سُمك الهايلايتر</label>
+      <input type="range" id="highlighterSize" min="5" max="55" value="20">
+      <output class="range-value" id="highlighterSizeValue">20</output>
+
+      <label for="highlightOpacity">الشفافية</label>
+      <input type="range" id="highlightOpacity" min="10" max="100" value="35">
+      <output class="range-value" id="highlightOpacityValue">35%</output>
+
+      <div class="panel-divider"></div>
+
+      <div class="setting-row">
+        <div>
+          <strong>تنعيم الكتابة التلقائي</strong>
+          <small>يجعل التحديد أكثر انسيابية</small>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" id="highlighterSmoothing" checked>
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+
+    </section>
+
+    <!-- إعدادات الممحاة -->
+    <section class="tool-settings" id="eraserSettings" hidden>
+
+      <label for="eraserMode">نوع الممحاة</label>
+
+      <select id="eraserMode">
+        <option value="normal">ممحاة تقليدية</option>
+        <option value="stroke">حذف الخط بالكامل</option>
+      </select>
+
+      <label for="eraserSize">حجم الممحاة</label>
+      <input type="range" id="eraserSize" min="8" max="100" value="30">
+      <output class="range-value" id="eraserSizeValue">30</output>
+
+    </section>
+
+    <!-- إعدادات الخلفية -->
+    <section class="tool-settings" id="backgroundSettings" hidden>
+
+      <label for="backgroundType">نوع الخلفية</label>
+
+      <select id="backgroundType">
+        <option value="dots">نقاط</option>
+        <option value="grid">شبكة</option>
+        <option value="squares">مربعات</option>
+        <option value="lines">سطور</option>
+        <option value="plain">سادة</option>
+      </select>
+
+      <label for="pageColor">لون الصفحة</label>
+      <input type="color" id="pageColor" value="#ffffff">
+
+      <label for="patternColor">لون التفاصيل</label>
+      <input type="color" id="patternColor" value="#d8dce3">
+
+    </section>
+
+  </aside>
+
+  <!-- نافذة تأكيد المسح -->
+  <div class="confirm-overlay" id="confirmOverlay">
+
+    <div class="confirm-box">
+      <h3>مسح السبورة؟</h3>
+      <p>هل تريد حذف جميع الرسومات الموجودة؟</p>
+
+      <div class="confirm-actions">
+        <button id="cancelClear">إلغاء</button>
+        <button id="confirmClear">مسح الكل</button>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
